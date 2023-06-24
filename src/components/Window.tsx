@@ -7,15 +7,29 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
+  icon?: React.ReactNode;
   children: React.ReactNode;
+  height?: number;
+  width?: number;
 }
 
-const Window = ({ children }: Props) => {
+const Window = ({ icon, children, height = 400, width = 600 }: Props) => {
   return (
     <Wrapper>
-      <R95Window className="window" style={{ width: 600, height: 400 }}>
+      <R95Window
+        className="window"
+        style={{
+          width: width,
+          height: height,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <WindowHeader className="window-title flex items-center justify-between">
-          <span>AquaNet</span>
+          <span className="flex items-center gap-2">
+            {icon}
+            AquaNet
+          </span>
           {/* <Button disabled> */}
           {/*   <IoCloseSharp size={22} /> */}
           {/* </Button> */}

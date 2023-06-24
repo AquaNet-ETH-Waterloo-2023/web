@@ -1,20 +1,31 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
+import { useContext } from "react";
 import { Button } from "react95";
 import { useAccount } from "wagmi";
 
+import FirstStep from "@/components/FirstStep";
+import UserLogin from "@/components/UserLogin";
 import Window from "@/components/Window";
+import WaterDrop from "@/icons/WaterDrop";
+
+import { UserContext } from "./_app";
 
 export default function Home() {
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const user = useContext(UserContext);
 
   return (
     <div className="flex h-full  w-full items-center justify-center">
       {address ? (
-        <>{address}</>
+        user && user.user ? (
+          <UserLogin address={address} />
+        ) : (
+          <FirstStep address={address} />
+        )
       ) : (
-        <Window>
+        <Window icon={<WaterDrop />}>
           <div className="flex flex-col items-center justify-between gap-8">
             <Image
               src="/aquanet_welcome.png"

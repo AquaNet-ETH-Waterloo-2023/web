@@ -1,6 +1,18 @@
 import Image from "next/image";
 import { MenuList, MenuListItem, Separator } from "react95";
+import { styled } from "styled-components";
 import { useAccount, useDisconnect } from "wagmi";
+
+import Folder from "@/icons/Folder";
+import Logout from "@/icons/Logout";
+import Settings from "@/icons/Settings";
+import MyPuddle from "@/icons/MyPuddle";
+
+const MenuItem = styled(MenuListItem)`
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+`;
 
 interface Props {
   open: boolean;
@@ -12,7 +24,7 @@ const StartMenu = ({ open, setOpen }: Props) => {
   const { disconnect } = useDisconnect();
 
   return open ? (
-    <div className="absolute bottom-[100%] left-0 flex">
+    <div className="absolute bottom-[100%] left-0 flex h-[300px]">
       <div className="bg-[#012463]">
         <Image
           src="/aquanet_start_menu.png"
@@ -23,27 +35,25 @@ const StartMenu = ({ open, setOpen }: Props) => {
       </div>
       <MenuList
         onClick={() => setOpen(false)}
-        style={{ display: "flex", flexDirection: "column" }}
+        style={{ display: "flex", flexDirection: "column", width: "200px" }}
       >
-        <MenuListItem>
-          <span role="img" aria-label="👨‍💻">
-            👨‍💻
-          </span>
-          Profile
-        </MenuListItem>
-        <MenuListItem>
-          <span role="img" aria-label="📁">
-            📁
-          </span>
-          My account
-        </MenuListItem>
+        <MenuItem>
+          <Folder />
+          My Stuff
+        </MenuItem>
+        <MenuItem>
+          <MyPuddle />
+          myPuddle
+        </MenuItem>
         <Separator style={{ marginTop: "auto" }} />
-        <MenuListItem disabled={!address} onClick={() => disconnect()}>
-          <span role="img" aria-label="🔙">
-            🔙
-          </span>
+        <MenuItem disabled={!address} onClick={() => disconnect()}>
+          <Settings />
+          Settings
+        </MenuItem>
+        <MenuItem disabled={!address} onClick={() => disconnect()}>
+          <Logout />
           Logout
-        </MenuListItem>
+        </MenuItem>
       </MenuList>
     </div>
   ) : null;

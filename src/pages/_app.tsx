@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import localFont from "next/font/local";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
 import original from "react95/dist/themes/original";
 import { ThemeProvider } from "styled-components";
 import { twMerge } from "tailwind-merge";
@@ -8,6 +9,21 @@ import Navbar from "@/components/Navbar";
 import Client from "@/providers/Client";
 import RainbowkitProvider from "@/providers/RainbowKit";
 import "@/styles/globals.css";
+
+type User = {
+  tba: string;
+  image: string;
+  name: string;
+};
+
+interface UserContextType {
+  user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
+}
+
+export const UserContext = createContext<UserContextType | undefined>(
+  undefined
+);
 
 const msFont = localFont({
   src: [
@@ -25,6 +41,8 @@ const msFont = localFont({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [user, setUser] = useState<User | null>(null);
+
   return (
     <ThemeProvider theme={original}>
       <Client>
@@ -35,10 +53,12 @@ export default function App({ Component, pageProps }: AppProps) {
               msFont.className
             )}
           >
-            <Component {...pageProps} />
-            <Client>
-              <Navbar />
-            </Client>
+            <UserContext.Provider value={{ user, setUser }}>
+              <Component {...pageProps} />
+              <Client>
+                <Navbar />
+              </Client>
+            </UserContext.Provider>
           </div>
         </RainbowkitProvider>
       </Client>

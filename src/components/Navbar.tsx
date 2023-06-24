@@ -1,10 +1,13 @@
 import { useAccountModal } from "@rainbow-me/rainbowkit";
 import BlockiesSvg from "blockies-react-svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AppBar, Button, TextInput, Toolbar } from "react95";
 import { styled } from "styled-components";
 import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
+
+import WaterDrop from "@/icons/WaterDrop";
+import { UserContext } from "@/pages/_app";
 
 import StartMenu from "./StartMenu";
 
@@ -30,6 +33,10 @@ const Navbar = ({}: Props) => {
   });
   const { openAccountModal } = useAccountModal();
 
+  const userCtx = useContext(UserContext);
+  if (!userCtx) return null;
+  const { user } = userCtx;
+
   return (
     <AppBar position="bottom">
       <Toolbar className="justify-between">
@@ -37,19 +44,21 @@ const Navbar = ({}: Props) => {
           <Button
             onClick={() => setOpen(!open)}
             active={open}
-            style={{ fontWeight: "bold", padding: "0.5rem 1rem" }}
+            style={{
+              fontWeight: "bold",
+              padding: "0.5rem 1rem",
+              display: "flex",
+              gap: "0.5rem",
+            }}
+            disabled={!user}
           >
-            {/* <img */}
-            {/*   src={logoIMG} */}
-            {/*   alt="react95 logo" */}
-            {/*   style={{ height: "20px", marginRight: 4 }} */}
-            {/* /> */}
+            <WaterDrop size={20} />
             Start
           </Button>
           <StartMenu open={open} setOpen={setOpen} />
           <div className="flex items-center gap-4">
             {ensAvatar ? (
-              <span onClick={openAccountModal}>
+              <span onClick={openAccountModal} className="cursor-pointer">
                 <Image
                   src={ensAvatar}
                   alt="Profile image"
@@ -58,7 +67,7 @@ const Navbar = ({}: Props) => {
                 />
               </span>
             ) : address ? (
-              <span onClick={openAccountModal}>
+              <span onClick={openAccountModal} className="cursor-pointer">
                 <BlockiesSvg address={address} size={8} scale={3} />
               </span>
             ) : (
