@@ -140,7 +140,7 @@ const MyPuddle = () => {
       width={1000}
       height={700}
     >
-      <div className="m-[2px] flex grow justify-center bg-white">
+      <div className="m-[2px] flex grow justify-center overflow-scroll bg-white">
         <div className="w-[800px]">
           <Image
             src="/header_mypuddle.png"
@@ -165,7 +165,7 @@ const MyPuddle = () => {
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-1 flex flex-col gap-4">
                 <h3 className="text-lg font-bold">{user?.user?.username}</h3>
-                <div className="flex gap-4 items-start">
+                <div className="flex items-start gap-4">
                   <Image
                     src={user?.user?.image ?? "/aquanet_logo.png"}
                     width={120}
