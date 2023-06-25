@@ -139,7 +139,7 @@ const UserLogin = ({ address, back }: Props) => {
         args: [tokenBoundAccount],
       });
 
-      if (hasProfile) {
+      if (!hasProfile) {
         setNftsWithAccounts((prev) => removeDuplicates([...prev, nft]));
       }
     });
