@@ -41,7 +41,9 @@ const MyPuddle = () => {
   const [mpPage, setMpPage] = useState<MyPuddlePage>("me");
   const page = useContext(PageContext);
   const user = useContext(UserContext);
-  const [friends, setFriends] = useState<User[]>([]);
+  const [friends, setFriends] = useState<{ username: string; image: string }[]>(
+    []
+  );
 
   const tokenId = user?.user?.tokenId ?? "";
   const tokenAddress = user?.user?.tokenAddress ?? "";
@@ -63,11 +65,19 @@ const MyPuddle = () => {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/friends`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/friends`);
       const data = await res.json();
-      console.log(data);
+      console.log(JSON.stringify(data, null, 2));
+      setFriends(
+        data.friends
+          .map((f: any) => ({
+            username: f.username,
+            image: f.profile_image,
+          }))
+          .filter((f: any) => f.username !== user?.user?.username)
+      );
     })();
-  }, []);
+  }, [user]);
 
   return (
     <Window
@@ -124,11 +134,52 @@ const MyPuddle = () => {
                 <div className="m-1 bg-[#D5E8FB] p-2">{user?.user?.tone}</div>
               </div>
             </div>
+
             <div className="col-span-2">
               <div className="bg-[#FFCC99]">
                 <span className="p-2 font-bold">
                   {user?.user?.username}&apos;s Puddle
                 </span>
+              </div>
+
+              <div className="grid grid-cols-4 grid-rows-2 items-center justify-center p-4">
+                {friends.map((friend) => (
+                  <div
+                    key={friend.username}
+                    className="flex flex-col items-center"
+                  >
+                    <Image
+                      src={friend.image}
+                      width={80}
+                      height={80}
+                      alt={friend.username}
+                    />
+                    {friend.username}
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-[#FFCC99]">
+                <span className="p-2 font-bold">
+                  About {user?.user?.username}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-4 grid-rows-2 items-center justify-center p-4">
+                {friends.map((friend) => (
+                  <div
+                    key={friend.username}
+                    className="flex flex-col items-center"
+                  >
+                    <Image
+                      src={friend.image}
+                      width={80}
+                      height={80}
+                      alt={friend.username}
+                    />
+                    {friend.username}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

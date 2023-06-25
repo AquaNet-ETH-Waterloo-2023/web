@@ -17,6 +17,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.airstack.xyz",
       },
+      {
+        protocol: "https",
+        hostname: "i.seadn.io",
+      },
     ],
   },
 };

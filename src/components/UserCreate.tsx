@@ -95,7 +95,7 @@ const UserLogin = ({ address, back }: Props) => {
   const nfts: Array<NFT> = useMemo(() => {
     return data.data?.TokenBalances?.TokenBalance ?? [];
   }, [data]);
-  const [nftsWithAccounts, setNftsWithAccounts] = useState<Array<NFT>>([]);
+  const [nftsWithoutAccounts, setNftsWithoutAccounts] = useState<Array<NFT>>([]);
   const [creating, setCreating] = useState<boolean>(false);
 
   const publicClient = usePublicClient();
@@ -140,18 +140,18 @@ const UserLogin = ({ address, back }: Props) => {
       });
 
       if (!hasProfile) {
-        setNftsWithAccounts((prev) => removeDuplicates([...prev, nft]));
+        setNftsWithoutAccounts((prev) => removeDuplicates([...prev, nft]));
       }
     });
 
     return () => {
-      setNftsWithAccounts([]);
+      setNftsWithoutAccounts([]);
     };
   }, [nfts, tokenboundClient, publicClient]);
 
   const handleClick = useCallback(async () => {
     if (!walletClient) return;
-    const selected = nfts[parseInt(selectedId)];
+    const selected = nftsWithoutAccounts[parseInt(selectedId)];
     if (!selected) return;
 
     try {
@@ -214,7 +214,7 @@ const UserLogin = ({ address, back }: Props) => {
           </div>
 
           <div className="grid h-[380px] grid-cols-3 gap-4 overflow-hidden p-4">
-            {nftsWithAccounts.map((nft: NFT, index) => {
+            {nftsWithoutAccounts.map((nft: NFT, index) => {
               return (
                 <Image
                   src={nft.tokenNfts.contentValue.image.small}
@@ -249,7 +249,7 @@ const UserLogin = ({ address, back }: Props) => {
       </Window>
     );
   } else {
-    return <LoadingProfile nft={nftsWithAccounts[parseInt(selectedId)]} />;
+    return <LoadingProfile nft={nftsWithoutAccounts[parseInt(selectedId)]} />;
   }
 };
 
