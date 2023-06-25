@@ -44,6 +44,9 @@ const MyPuddle = () => {
   const [friends, setFriends] = useState<{ username: string; image: string }[]>(
     []
   );
+  const [posts, setPosts] = useState<{ content: string; created_at: Date }[]>(
+    []
+  );
 
   const tokenId = user?.user?.tokenId ?? "";
   const tokenAddress = user?.user?.tokenAddress ?? "";
@@ -67,7 +70,6 @@ const MyPuddle = () => {
     (async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/friends`);
       const data = await res.json();
-      console.log(JSON.stringify(data, null, 2));
       setFriends(
         data.friends
           .map((f: any) => ({
@@ -75,6 +77,21 @@ const MyPuddle = () => {
             image: f.profile_image,
           }))
           .filter((f: any) => f.username !== user?.user?.username)
+      );
+    })();
+  }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/posts/all?author_id=${user?.user?.id}`
+      );
+      const data = await res.json();
+      setPosts(
+        data.posts.map((p: any) => ({
+          content: p.content,
+          created_at: new Date(p.created_at),
+        }))
       );
     })();
   }, [user]);
@@ -96,7 +113,7 @@ const MyPuddle = () => {
             height={100}
           />
 
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-3 gap-4">
             <div className="col-span-1 flex flex-col gap-4">
               <h3 className="text-lg font-bold">{user?.user?.username}</h3>
               <div className="flex gap-4">
@@ -138,11 +155,11 @@ const MyPuddle = () => {
             <div className="col-span-2">
               <div className="bg-[#FFCC99]">
                 <span className="p-2 font-bold">
-                  {user?.user?.username}&apos;s Puddle
+                  {user?.user?.username}&apos;s Friends
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 grid-rows-2 items-center justify-center p-4">
+              <div className="grid grid-cols-4 items-center justify-center p-4">
                 {friends.map((friend) => (
                   <div
                     key={friend.username}
@@ -165,21 +182,22 @@ const MyPuddle = () => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 grid-rows-2 items-center justify-center p-4">
-                {friends.map((friend) => (
-                  <div
-                    key={friend.username}
-                    className="flex flex-col items-center"
-                  >
-                    <Image
-                      src={friend.image}
-                      width={80}
-                      height={80}
-                      alt={friend.username}
-                    />
-                    {friend.username}
-                  </div>
-                ))}
+              <div className="grid p-4">{user?.user?.bio}</div>
+
+              <div>
+                <div className="bg-[#87A7E8]">
+                  <span className="p-2 font-bold">
+                    {user?.user?.username}&apos;s Posts
+                  </span>
+                </div>
+                <div className="[&>*:nth-child(even)]:bg-[#8DDCED] [&>*:nth-child(odd)]:bg-[#C8F0F9]">
+                  {posts.map((post, index) => (
+                    <div className="p-4 flex flex-col gap-r" key={index}>
+                      <span className="font-bold">{post.created_at.toLocaleString()}</span>
+                      <span>{post.content}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

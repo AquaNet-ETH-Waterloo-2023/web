@@ -58,6 +58,7 @@ const LoadingProfile = ({ nft }: Props) => {
           );
           const { personality } = await response.json();
           const f: User = {
+            id: personality.id,
             tokenAddress,
             tokenId,
             name,

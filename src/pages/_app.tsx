@@ -11,6 +11,7 @@ import RainbowkitProvider from "@/providers/RainbowKit";
 import "@/styles/globals.css";
 
 export type User = {
+  id: number;
   tokenAddress: string;
   tokenId: string;
   image: string;
