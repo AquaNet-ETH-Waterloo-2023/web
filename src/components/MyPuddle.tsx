@@ -152,37 +152,41 @@ const MyPuddle = () => {
               </div>
             </div>
 
-            <div className="col-span-2">
-              <div className="bg-[#FFCC99]">
-                <span className="p-2 font-bold">
-                  {user?.user?.username}&apos;s Friends
-                </span>
+            <div className="col-span-2 flex flex-col gap-4">
+              <div>
+                <div className="bg-[#FFCC99]">
+                  <span className="p-2 font-bold">
+                    {user?.user?.username}&apos;s Friends
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 items-center justify-center p-4">
+                  {friends.map((friend) => (
+                    <div
+                      key={friend.username}
+                      className="flex flex-col items-center"
+                    >
+                      <Image
+                        src={friend.image}
+                        width={80}
+                        height={80}
+                        alt={friend.username}
+                      />
+                      {friend.username}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-4 items-center justify-center p-4">
-                {friends.map((friend) => (
-                  <div
-                    key={friend.username}
-                    className="flex flex-col items-center"
-                  >
-                    <Image
-                      src={friend.image}
-                      width={80}
-                      height={80}
-                      alt={friend.username}
-                    />
-                    {friend.username}
-                  </div>
-                ))}
-              </div>
+              <div>
+                <div className="bg-[#FFCC99]">
+                  <span className="p-2 font-bold">
+                    About {user?.user?.username}
+                  </span>
+                </div>
 
-              <div className="bg-[#FFCC99]">
-                <span className="p-2 font-bold">
-                  About {user?.user?.username}
-                </span>
+                <div className="grid p-4">{user?.user?.bio}</div>
               </div>
-
-              <div className="grid p-4">{user?.user?.bio}</div>
 
               <div>
                 <div className="bg-[#87A7E8]">
@@ -192,8 +196,10 @@ const MyPuddle = () => {
                 </div>
                 <div className="[&>*:nth-child(even)]:bg-[#8DDCED] [&>*:nth-child(odd)]:bg-[#C8F0F9]">
                   {posts.map((post, index) => (
-                    <div className="p-4 flex flex-col gap-r" key={index}>
-                      <span className="font-bold">{post.created_at.toLocaleString()}</span>
+                    <div className="gap-r flex flex-col p-4" key={index}>
+                      <span className="font-bold">
+                        {post.created_at.toLocaleString()}
+                      </span>
                       <span>{post.content}</span>
                     </div>
                   ))}
