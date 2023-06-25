@@ -5,26 +5,24 @@ import { Button } from "react95";
 import { useAccount } from "wagmi";
 
 import FirstStep from "@/components/FirstStep";
+import MyPuddle from "@/components/MyPuddle";
 import Window from "@/components/Window";
 import Folder from "@/icons/Folder";
 import MyPuddleDesktop from "@/icons/MyPuddleDesktop";
 import WaterDrop from "@/icons/WaterDrop";
 
-import { UserContext } from "./_app";
+import { PageContext, UserContext } from "./_app";
 
 export default function Home() {
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const user = useContext(UserContext);
+  const page = useContext(PageContext);
 
   return (
     <div className="flex h-full  w-full items-center justify-center">
       {address ? (
-        user && !user.user ? (
-          <FirstStep address={address} />
-        ) : (
-          <>{user?.user?.name}</>
-        )
+        user && !user.user && <FirstStep address={address} />
       ) : (
         <Window icon={<WaterDrop />}>
           <div className="flex flex-col items-center justify-between gap-8">
@@ -40,18 +38,29 @@ export default function Home() {
       )}
       {user && user.user && (
         <div className="absolute left-0 top-0 flex flex-col gap-4 p-4">
-          <span>
+          <span
+            onClick={() => page?.setPage("stuff")}
+            className="cursor-pointer"
+          >
             <Folder size={64} />
             <p className="max-w-[64px] text-center text-white">
               {user.user.username}&apos;s Stuff
             </p>
           </span>
-          <span>
+          <span
+            onClick={() => page?.setPage("mypuddle")}
+            className="cursor-pointer"
+          >
             <MyPuddleDesktop size={64} />
             <p className="max-w-[64px] text-center text-white">myPuddle</p>
           </span>
         </div>
       )}
+      {page?.page === "stuff" ? (
+        <>stuff</>
+      ) : page?.page === "mypuddle" ? (
+        <MyPuddle />
+      ) : null}
     </div>
   );
 }

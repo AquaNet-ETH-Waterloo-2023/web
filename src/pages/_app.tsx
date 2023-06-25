@@ -12,19 +12,32 @@ import "@/styles/globals.css";
 
 export type User = {
   tokenAddress: string;
+  tokenId: string;
   image: string;
   name: string;
   bio: string;
   created_at: string;
   username: string;
+  tone: string;
 };
+
+export type Page = "none" | "stuff" | "mypuddle";
 
 interface UserContextType {
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
 }
 
+interface PageContextType {
+  page: Page;
+  setPage: Dispatch<SetStateAction<Page>>;
+}
+
 export const UserContext = createContext<UserContextType | undefined>(
+  undefined
+);
+
+export const PageContext = createContext<PageContextType | undefined>(
   undefined
 );
 
@@ -45,6 +58,7 @@ const msFont = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [page, setPage] = useState<Page>("none");
 
   return (
     <ThemeProvider theme={original}>
@@ -57,10 +71,12 @@ export default function App({ Component, pageProps }: AppProps) {
             )}
           >
             <UserContext.Provider value={{ user, setUser }}>
-              <Component {...pageProps} />
-              <Client>
-                <Navbar />
-              </Client>
+              <PageContext.Provider value={{ page, setPage }}>
+                <Component {...pageProps} />
+                <Client>
+                  <Navbar />
+                </Client>
+              </PageContext.Provider>
             </UserContext.Provider>
           </div>
         </RainbowkitProvider>

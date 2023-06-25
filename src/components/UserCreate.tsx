@@ -167,7 +167,7 @@ const UserLogin = ({ address, back }: Props) => {
       });
       await walletClient.writeContract(request);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     setCreating(true);
   }, [address, walletClient, nfts, selectedId, publicClient]);

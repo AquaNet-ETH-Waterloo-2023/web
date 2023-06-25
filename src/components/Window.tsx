@@ -13,6 +13,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   height?: number;
   width?: number;
   title?: string;
+  close?: () => void;
 }
 
 const Window = ({
@@ -21,6 +22,7 @@ const Window = ({
   height = 400,
   width = 600,
   title = "AquaNet",
+  close,
   ...props
 }: Props) => {
   return (
@@ -39,9 +41,11 @@ const Window = ({
             {icon}
             <span>{title}</span>
           </span>
-          {/* <Button disabled> */}
-          {/*   <IoCloseSharp size={22} /> */}
-          {/* </Button> */}
+          {close && (
+            <Button onClick={close}>
+              <IoCloseSharp size={22} />
+            </Button>
+          )}
         </WindowHeader>
         <Fragment {...props}>{children}</Fragment>
       </R95Window>

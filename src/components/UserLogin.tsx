@@ -225,6 +225,7 @@ const UserLogin = ({ address, back }: Props) => {
             const { personality } = await response.json();
             const nft: User = {
               tokenAddress,
+              tokenId,
               name: nftsWithAccounts[parseInt(selectedId)].tokenNfts.metaData
                 .name,
               image:
@@ -233,6 +234,7 @@ const UserLogin = ({ address, back }: Props) => {
               bio: personality.bio,
               created_at: personality.created_at,
               username: personality.username,
+              tone: personality.tone,
             };
             user?.setUser(nft);
           }}
