@@ -165,7 +165,7 @@ const MyPuddle = () => {
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-1 flex flex-col gap-4">
                 <h3 className="text-lg font-bold">{user?.user?.username}</h3>
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-start">
                   <Image
                     src={user?.user?.image ?? "/aquanet_logo.png"}
                     width={120}

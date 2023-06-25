@@ -27,3 +27,50 @@ query GetNFTsByWalletAndContracts($owner: Identity!) {
   }
 }
 `;
+
+export const getAllNFTs = `
+query GetNFTsByWalletAndContracts($owner: Identity!) {
+  TokenBalances(
+    input: {
+      filter: {
+        owner: {_eq: $owner},
+        tokenType: {_in: [ERC1155, ERC721]}
+      },
+      blockchain: ethereum,
+    }
+  ) {
+    TokenBalance {
+      tokenNfts {
+        address
+        tokenId
+        metaData {
+          name
+        }
+        contentValue {
+          image {
+            small
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+export const getERC20s = `
+query GetERC20s($owner: Identity!) {
+  TokenBalances(
+    input: {
+      filter: { owner: { _eq: $owner }, tokenType: { _eq: ERC20 } }
+      blockchain: ethereum
+    }
+  ) {
+    TokenBalance {
+      token {
+        name
+      }
+      formattedAmount
+    }
+  }
+}
+`;

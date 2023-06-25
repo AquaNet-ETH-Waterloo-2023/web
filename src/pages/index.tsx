@@ -1,12 +1,14 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { TokenboundClient } from "@tokenbound/sdk";
 import Head from "next/head";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "react95";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 import FirstStep from "@/components/FirstStep";
 import MyPuddle from "@/components/MyPuddle";
+import MyStuff from "@/components/MyStuff";
 import Window from "@/components/Window";
 import Folder from "@/icons/Folder";
 import MyPuddleDesktop from "@/icons/MyPuddleDesktop";
@@ -19,6 +21,23 @@ export default function Home() {
   const { openConnectModal } = useConnectModal();
   const user = useContext(UserContext);
   const page = useContext(PageContext);
+
+  const { data: walletClient } = useWalletClient();
+  const tokenboundClient = useMemo(() => {
+    return new TokenboundClient({
+      walletClient: walletClient!,
+      chainId: 1,
+    });
+  }, [walletClient]);
+
+  const tbaAddress = useMemo(() => {
+    if (!tokenboundClient || !user?.user?.tokenAddress || !user?.user?.tokenId)
+      return "";
+    return tokenboundClient.getAccount({
+      tokenContract: user?.user?.tokenAddress!,
+      tokenId: user?.user?.tokenId!,
+    });
+  }, [tokenboundClient, user?.user?.tokenAddress, user?.user?.tokenId]);
 
   return (
     <div className="flex h-full  w-full items-center justify-center">
@@ -61,7 +80,7 @@ export default function Home() {
         </div>
       )}
       {page?.page === "stuff" ? (
-        <>stuff</>
+        tbaAddress && <MyStuff tbaAddress={tbaAddress} />
       ) : page?.page === "mypuddle" ? (
         <MyPuddle />
       ) : null}

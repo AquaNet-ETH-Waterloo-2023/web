@@ -2,13 +2,13 @@ import Image from "next/image";
 import { useContext } from "react";
 import { MenuList, MenuListItem, Separator } from "react95";
 import { styled } from "styled-components";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 
 import Folder from "@/icons/Folder";
 import Logout from "@/icons/Logout";
 import MyPuddle from "@/icons/MyPuddle";
 import Settings from "@/icons/Settings";
-import { UserContext } from "@/pages/_app";
+import { PageContext, UserContext } from "@/pages/_app";
 
 const MenuItem = styled(MenuListItem)`
   display: flex;
@@ -23,8 +23,8 @@ interface Props {
 
 const StartMenu = ({ open, setOpen }: Props) => {
   const { address } = useAccount();
-  const { disconnect } = useDisconnect();
   const user = useContext(UserContext);
+  const page = useContext(PageContext);
 
   return open ? (
     <div className="absolute bottom-[100%] left-0 flex">
@@ -55,11 +55,11 @@ const StartMenu = ({ open, setOpen }: Props) => {
           {user?.user?.name ?? "AquaNet"}
         </div>
         <Separator />
-        <MenuItem>
+        <MenuItem onClick={() => page?.setPage("stuff")}>
           <Folder />
           My Stuff
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => page?.setPage("mypuddle")}>
           <MyPuddle />
           myPuddle
         </MenuItem>

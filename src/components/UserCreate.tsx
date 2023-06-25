@@ -1,14 +1,13 @@
 import { TokenboundClient } from "@tokenbound/sdk";
 import Image from "next/image";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "react95";
 import { twMerge } from "tailwind-merge";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { usePublicClient, useWalletClient } from "wagmi";
 
 import abi from "@/eth/aquanet-abi";
 import { getNFTs } from "@/gql/queries";
 import WaterDrop from "@/icons/WaterDrop";
-import { User, UserContext } from "@/pages/_app";
 import { useAirstackQuery } from "@/util/airstack";
 
 import LoadingProfile from "./LoadingProfile";
@@ -95,7 +94,9 @@ const UserLogin = ({ address, back }: Props) => {
   const nfts: Array<NFT> = useMemo(() => {
     return data.data?.TokenBalances?.TokenBalance ?? [];
   }, [data]);
-  const [nftsWithoutAccounts, setNftsWithoutAccounts] = useState<Array<NFT>>([]);
+  const [nftsWithoutAccounts, setNftsWithoutAccounts] = useState<Array<NFT>>(
+    []
+  );
   const [creating, setCreating] = useState<boolean>(false);
 
   const publicClient = usePublicClient();
@@ -166,11 +167,11 @@ const UserLogin = ({ address, back }: Props) => {
         ],
       });
       await walletClient.writeContract(request);
+      setCreating(true);
     } catch (e) {
       console.error(e);
     }
-    setCreating(true);
-  }, [address, walletClient, nfts, selectedId, publicClient]);
+  }, [address, walletClient, nftsWithoutAccounts, selectedId, publicClient]);
 
   if (!creating) {
     return (
