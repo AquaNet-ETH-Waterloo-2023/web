@@ -10,7 +10,7 @@ import Client from "@/providers/Client";
 import RainbowkitProvider from "@/providers/RainbowKit";
 import "@/styles/globals.css";
 
-type User = {
+export type User = {
   tba: string;
   image: string;
   name: string;

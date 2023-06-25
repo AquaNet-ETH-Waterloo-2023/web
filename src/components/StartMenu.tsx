@@ -1,12 +1,14 @@
 import Image from "next/image";
+import { useContext } from "react";
 import { MenuList, MenuListItem, Separator } from "react95";
 import { styled } from "styled-components";
 import { useAccount, useDisconnect } from "wagmi";
 
 import Folder from "@/icons/Folder";
 import Logout from "@/icons/Logout";
-import Settings from "@/icons/Settings";
 import MyPuddle from "@/icons/MyPuddle";
+import Settings from "@/icons/Settings";
+import { UserContext } from "@/pages/_app";
 
 const MenuItem = styled(MenuListItem)`
   display: flex;
@@ -22,6 +24,7 @@ interface Props {
 const StartMenu = ({ open, setOpen }: Props) => {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
+  const user = useContext(UserContext);
 
   return open ? (
     <div className="absolute bottom-[100%] left-0 flex h-[300px]">
@@ -50,7 +53,7 @@ const StartMenu = ({ open, setOpen }: Props) => {
           <Settings />
           Settings
         </MenuItem>
-        <MenuItem disabled={!address} onClick={() => disconnect()}>
+        <MenuItem disabled={!address} onClick={() => user?.setUser(null)}>
           <Logout />
           Logout
         </MenuItem>

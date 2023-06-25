@@ -6,14 +6,22 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.desktopBackground};
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   icon?: React.ReactNode;
   children: React.ReactNode;
   height?: number;
   width?: number;
+  title?: string;
 }
 
-const Window = ({ icon, children, height = 400, width = 600 }: Props) => {
+const Window = ({
+  icon,
+  children,
+  height = 400,
+  width = 600,
+  title = "AquaNet",
+  ...props
+}: Props) => {
   return (
     <Wrapper>
       <R95Window
@@ -28,13 +36,13 @@ const Window = ({ icon, children, height = 400, width = 600 }: Props) => {
         <WindowHeader className="window-title flex items-center justify-between">
           <span className="flex items-center gap-2">
             {icon}
-            AquaNet
+            <span>{title}</span>
           </span>
           {/* <Button disabled> */}
           {/*   <IoCloseSharp size={22} /> */}
           {/* </Button> */}
         </WindowHeader>
-        {children}
+        <span {...props}>{children}</span>
       </R95Window>
     </Wrapper>
   );

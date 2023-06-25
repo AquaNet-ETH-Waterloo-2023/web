@@ -1,7 +1,9 @@
+import { TokenboundClient } from "@tokenbound/sdk";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "react95";
 import { twMerge } from "tailwind-merge";
+import { useWalletClient } from "wagmi";
 
 import { getNFTs } from "@/gql/queries";
 import WaterDrop from "@/icons/WaterDrop";
@@ -11,6 +13,7 @@ import Window from "./Window";
 
 interface Props {
   address: string;
+  back: () => void;
 }
 
 type NFT = {
@@ -28,8 +31,9 @@ type NFT = {
   };
 };
 
-const UserLogin = ({ address }: Props) => {
+const UserCreate = ({ address, back }: Props) => {
   const [selectedId, setSelectedId] = useState("");
+  const { data: walletClient } = useWalletClient();
   const data = useAirstackQuery(getNFTs, { owner: address });
   const nfts = data.data?.TokenBalances?.TokenBalance ?? [];
   // repeat the array 20 times
@@ -65,34 +69,51 @@ const UserLogin = ({ address }: Props) => {
               height={3}
             />
             <p className="w-[250px] p-6 text-center">
-              Choose the NFT that you would like to make an account for.
+              Select which NFT you would like to login as.
             </p>
           </div>
         </div>
 
         <div className="grid max-h-[380px] grid-cols-3 gap-4 overflow-scroll p-4">
-          {nfts20.map((nft: NFT, index) => (
-            <Image
-              src={nft.tokenNfts.contentValue.image.small}
-              alt={`#${nft.tokenNfts.metaData.name}`}
-              key={nft.tokenNfts.metaData.name}
-              width={140}
-              height={140}
-              className={twMerge(
-                "cursor-pointer",
-                selectedId === index.toString() && "border-4 border-blue-500"
-              )}
-              onClick={() => setSelectedId(index.toString())}
-            />
-          ))}
+          {nfts20.map((nft: NFT, index) => {
+            const tokenboundClient = new TokenboundClient({
+              walletClient: walletClient!,
+              chainId: 1,
+            });
+
+            const tokenBoundAccount = tokenboundClient.getAccount({
+              tokenContract: nft.tokenNfts.address,
+              tokenId: nft.tokenNfts.tokenId,
+            });
+
+            console.log(tokenBoundAccount);
+
+            return (
+              <Image
+                src={nft.tokenNfts.contentValue.image.small}
+                alt={`#${nft.tokenNfts.metaData.name}`}
+                key={nft.tokenNfts.metaData.name}
+                width={140}
+                height={140}
+                className={twMerge(
+                  "cursor-pointer",
+                  selectedId === index.toString() && "border-4 border-blue-500"
+                )}
+                onClick={() => setSelectedId(index.toString())}
+              />
+            );
+          })}
         </div>
       </div>
 
-      <div className="m-4 flex justify-center">
-        <Button>Create New Account</Button>
+      <div className="m-4 flex justify-center gap-4">
+        <Button style={{ width: 200 }} onClick={back}>
+          Back
+        </Button>
+        <Button style={{ width: 200 }}>Create New Account</Button>
       </div>
     </Window>
   );
 };
 
-export default UserLogin;
+export default UserCreate;

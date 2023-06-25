@@ -5,7 +5,6 @@ import { Button } from "react95";
 import { useAccount } from "wagmi";
 
 import FirstStep from "@/components/FirstStep";
-import UserLogin from "@/components/UserLogin";
 import Window from "@/components/Window";
 import WaterDrop from "@/icons/WaterDrop";
 
@@ -19,10 +18,10 @@ export default function Home() {
   return (
     <div className="flex h-full  w-full items-center justify-center">
       {address ? (
-        user && user.user ? (
-          <UserLogin address={address} />
-        ) : (
+        user && !user.user ? (
           <FirstStep address={address} />
+        ) : (
+          <>{user?.user?.name}</>
         )
       ) : (
         <Window icon={<WaterDrop />}>
