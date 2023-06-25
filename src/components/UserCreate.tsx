@@ -1,15 +1,71 @@
 import { TokenboundClient } from "@tokenbound/sdk";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "react95";
 import { twMerge } from "tailwind-merge";
-import { useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 
+import abi from "@/eth/aquanet-abi";
 import { getNFTs } from "@/gql/queries";
 import WaterDrop from "@/icons/WaterDrop";
+import { User, UserContext } from "@/pages/_app";
 import { useAirstackQuery } from "@/util/airstack";
 
 import Window from "./Window";
+
+function isDeepEqual(obj1: any, obj2: any): boolean {
+  // Check if the objects are of the same type
+  if (typeof obj1 !== typeof obj2) {
+    return false;
+  }
+
+  // Check if both objects are arrays
+  if (Array.isArray(obj1) && Array.isArray(obj2)) {
+    if (obj1.length !== obj2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < obj1.length; i++) {
+      if (!isDeepEqual(obj1[i], obj2[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Check if both objects are objects
+  if (typeof obj1 === "object" && typeof obj2 === "object") {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    for (const key of keys1) {
+      if (!isDeepEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Check for primitive values
+  return obj1 === obj2;
+}
+
+function removeDuplicates(arr: any[]): any[] {
+  return arr.filter((value, index, self) => {
+    for (let i = index + 1; i < self.length; i++) {
+      if (isDeepEqual(value, self[i])) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
 
 interface Props {
   address: string;
@@ -31,13 +87,87 @@ type NFT = {
   };
 };
 
-const UserCreate = ({ address, back }: Props) => {
-  const [selectedId, setSelectedId] = useState("");
+const UserLogin = ({ address, back }: Props) => {
+  const [selectedId, setSelectedId] = useState<string>("");
   const { data: walletClient } = useWalletClient();
   const data = useAirstackQuery(getNFTs, { owner: address });
-  const nfts = data.data?.TokenBalances?.TokenBalance ?? [];
-  // repeat the array 20 times
-  const nfts20 = [...Array(20)].flatMap(() => nfts);
+  const nfts: Array<NFT> = useMemo(() => {
+    return data.data?.TokenBalances?.TokenBalance ?? [];
+  }, [data]);
+  const [nftsWithAccounts, setNftsWithAccounts] = useState<Array<NFT>>([]);
+
+  const publicClient = usePublicClient();
+  const tokenboundClient = useMemo(() => {
+    return new TokenboundClient({
+      walletClient: walletClient!,
+      chainId: 1,
+    });
+  }, [walletClient]);
+
+  useEffect(() => {
+    nfts.forEach(async (nft) => {
+      const tokenBoundAccount = tokenboundClient.getAccount({
+        tokenContract: nft.tokenNfts.address,
+        tokenId: nft.tokenNfts.tokenId,
+      });
+
+      const hasProfile = await publicClient.readContract({
+        address: "0x7bc5E31E7422c2fc4cF2419d8E01c303F7a1dBBA",
+        abi: [
+          {
+            constant: true,
+            inputs: [
+              {
+                name: "_owner",
+                type: "address",
+              },
+            ],
+            name: "balanceOf",
+            outputs: [
+              {
+                name: "balance",
+                type: "uint256",
+              },
+            ],
+            payable: false,
+            type: "function",
+          },
+        ],
+        functionName: "balanceOf",
+        args: [tokenBoundAccount],
+      });
+
+      if (!hasProfile) {
+        setNftsWithAccounts((prev) => removeDuplicates([...prev, nft]));
+      }
+    });
+
+    return () => {
+      setNftsWithAccounts([]);
+    };
+  }, [nfts, tokenboundClient, publicClient]);
+
+  const handleClick = useCallback(async () => {
+    if (!walletClient) return;
+    const selected = nfts[parseInt(selectedId)];
+    if (!selected) return;
+
+    try {
+      const { request } = await publicClient.simulateContract({
+        account: address as `0x${string}`,
+        address: "0x7bc5E31E7422c2fc4cF2419d8E01c303F7a1dBBA",
+        abi,
+        functionName: "safeMint",
+        args: [
+          selected.tokenNfts.address as `0x${string}`,
+          BigInt(selected.tokenNfts.tokenId),
+        ],
+      });
+      await walletClient.writeContract(request);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [address, walletClient, nfts, selectedId, publicClient]);
 
   return (
     <Window height={500} width={800} icon={<WaterDrop />}>
@@ -74,20 +204,8 @@ const UserCreate = ({ address, back }: Props) => {
           </div>
         </div>
 
-        <div className="grid max-h-[380px] grid-cols-3 gap-4 overflow-scroll p-4">
-          {nfts20.map((nft: NFT, index) => {
-            const tokenboundClient = new TokenboundClient({
-              walletClient: walletClient!,
-              chainId: 1,
-            });
-
-            const tokenBoundAccount = tokenboundClient.getAccount({
-              tokenContract: nft.tokenNfts.address,
-              tokenId: nft.tokenNfts.tokenId,
-            });
-
-            console.log(tokenBoundAccount);
-
+        <div className="grid h-[380px] grid-cols-3 gap-4 overflow-scroll p-4">
+          {nftsWithAccounts.map((nft: NFT, index) => {
             return (
               <Image
                 src={nft.tokenNfts.contentValue.image.small}
@@ -110,10 +228,16 @@ const UserCreate = ({ address, back }: Props) => {
         <Button style={{ width: 200 }} onClick={back}>
           Back
         </Button>
-        <Button style={{ width: 200 }}>Create New Account</Button>
+        <Button
+          style={{ width: 200 }}
+          disabled={!selectedId}
+          onClick={handleClick}
+        >
+          Create Account
+        </Button>
       </div>
     </Window>
   );
 };
 
-export default UserCreate;
+export default UserLogin;

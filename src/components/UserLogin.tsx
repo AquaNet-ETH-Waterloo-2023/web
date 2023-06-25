@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "react95";
 import { twMerge } from "tailwind-merge";
-import { useContractRead, usePublicClient, useWalletClient } from "wagmi";
+import { usePublicClient, useWalletClient } from "wagmi";
 
 import { getNFTs } from "@/gql/queries";
 import WaterDrop from "@/icons/WaterDrop";
@@ -11,6 +11,60 @@ import { User, UserContext } from "@/pages/_app";
 import { useAirstackQuery } from "@/util/airstack";
 
 import Window from "./Window";
+
+function isDeepEqual(obj1: any, obj2: any): boolean {
+  // Check if the objects are of the same type
+  if (typeof obj1 !== typeof obj2) {
+    return false;
+  }
+
+  // Check if both objects are arrays
+  if (Array.isArray(obj1) && Array.isArray(obj2)) {
+    if (obj1.length !== obj2.length) {
+      return false;
+    }
+
+    for (let i = 0; i < obj1.length; i++) {
+      if (!isDeepEqual(obj1[i], obj2[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Check if both objects are objects
+  if (typeof obj1 === "object" && typeof obj2 === "object") {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    for (const key of keys1) {
+      if (!isDeepEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Check for primitive values
+  return obj1 === obj2;
+}
+
+function removeDuplicates(arr: any[]): any[] {
+  return arr.filter((value, index, self) => {
+    for (let i = index + 1; i < self.length; i++) {
+      if (isDeepEqual(value, self[i])) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
 
 interface Props {
   address: string;
@@ -84,7 +138,7 @@ const UserLogin = ({ address, back }: Props) => {
       });
 
       if (hasProfile) {
-        setNftsWithAccounts((prev) => [...prev, nft]);
+        setNftsWithAccounts((prev) => removeDuplicates([...prev, nft]));
       }
     });
 
