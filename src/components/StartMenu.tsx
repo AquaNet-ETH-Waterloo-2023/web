@@ -27,7 +27,7 @@ const StartMenu = ({ open, setOpen }: Props) => {
   const user = useContext(UserContext);
 
   return open ? (
-    <div className="absolute bottom-[100%] left-0 flex h-[300px]">
+    <div className="absolute bottom-[100%] left-0 flex">
       <div className="bg-[#012463]">
         <Image
           src="/aquanet_start_menu.png"
@@ -38,8 +38,23 @@ const StartMenu = ({ open, setOpen }: Props) => {
       </div>
       <MenuList
         onClick={() => setOpen(false)}
-        style={{ display: "flex", flexDirection: "column", width: "200px" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: 250,
+          height: 300,
+        }}
       >
+        <div className="flex items-center gap-2 p-2">
+          <Image
+            src={user?.user?.image ?? "/aquanet_logo.png"}
+            width={40}
+            height={40}
+            alt={user?.user?.name ?? ""}
+          />
+          {user?.user?.name ?? "AquaNet"}
+        </div>
+        <Separator />
         <MenuItem>
           <Folder />
           My Stuff
@@ -49,7 +64,7 @@ const StartMenu = ({ open, setOpen }: Props) => {
           myPuddle
         </MenuItem>
         <Separator style={{ marginTop: "auto" }} />
-        <MenuItem disabled={!address} onClick={() => disconnect()}>
+        <MenuItem>
           <Settings />
           Settings
         </MenuItem>

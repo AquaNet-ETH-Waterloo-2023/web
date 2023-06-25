@@ -11,9 +11,12 @@ import RainbowkitProvider from "@/providers/RainbowKit";
 import "@/styles/globals.css";
 
 export type User = {
-  tba: string;
+  tokenAddress: string;
   image: string;
   name: string;
+  bio: string;
+  created_at: string;
+  username: string;
 };
 
 interface UserContextType {

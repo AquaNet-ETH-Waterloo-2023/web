@@ -54,10 +54,17 @@ const LoadingProfile = ({ nft }: Props) => {
         console.log(data);
 
         if (data && data.posts && data.posts.length > 0) {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/personality?token_address=${tokenAddress}&token_id=${tokenId}`
+          );
+          const { personality } = await response.json();
           const f: User = {
-            tba: tokenAddress,
+            tokenAddress: tokenAddress,
             name,
             image,
+            bio: personality.bio,
+            created_at: personality.created_at,
+            username: personality.username,
           };
           user?.setUser(f);
           clearInterval(timer);

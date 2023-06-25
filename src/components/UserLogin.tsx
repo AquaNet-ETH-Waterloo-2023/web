@@ -214,14 +214,25 @@ const UserLogin = ({ address, back }: Props) => {
         <Button
           style={{ width: 200 }}
           disabled={!selectedId}
-          onClick={() => {
+          onClick={async () => {
+            const tokenAddress =
+              nftsWithAccounts[parseInt(selectedId)].tokenNfts.address;
+            const tokenId =
+              nftsWithAccounts[parseInt(selectedId)].tokenNfts.tokenId;
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/personality?token_address=${tokenAddress}&token_id=${tokenId}`
+            );
+            const { personality } = await response.json();
             const nft: User = {
-              tba: nftsWithAccounts[parseInt(selectedId)].tokenNfts.address,
+              tokenAddress,
               name: nftsWithAccounts[parseInt(selectedId)].tokenNfts.metaData
                 .name,
               image:
                 nftsWithAccounts[parseInt(selectedId)].tokenNfts.contentValue
                   .image.small,
+              bio: personality.bio,
+              created_at: personality.created_at,
+              username: personality.username,
             };
             user?.setUser(nft);
           }}
