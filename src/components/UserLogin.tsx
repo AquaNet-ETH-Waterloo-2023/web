@@ -187,7 +187,7 @@ const UserLogin = ({ address, back }: Props) => {
           </div>
         </div>
 
-        <div className="grid h-[380px] grid-cols-3 gap-4 overflow-scroll p-4">
+        <div className="grid h-[380px] grid-cols-3 gap-4 overflow-hidden p-4">
           {nftsWithAccounts.map((nft: NFT, index) => {
             return (
               <Image

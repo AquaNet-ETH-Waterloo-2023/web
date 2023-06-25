@@ -213,7 +213,7 @@ const UserLogin = ({ address, back }: Props) => {
             </div>
           </div>
 
-          <div className="grid h-[380px] grid-cols-3 gap-4 overflow-scroll p-4">
+          <div className="grid h-[380px] grid-cols-3 gap-4 overflow-hidden p-4">
             {nftsWithAccounts.map((nft: NFT, index) => {
               return (
                 <Image
@@ -249,7 +249,7 @@ const UserLogin = ({ address, back }: Props) => {
       </Window>
     );
   } else {
-    return <LoadingProfile nft={nfts[parseInt(selectedId)]} />;
+    return <LoadingProfile nft={nftsWithAccounts[parseInt(selectedId)]} />;
   }
 };
 

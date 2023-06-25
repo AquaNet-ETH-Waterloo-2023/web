@@ -1,11 +1,11 @@
 import { TokenboundClient } from "@tokenbound/sdk";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useWalletClient } from "wagmi";
 
 import Explorer from "@/icons/Explorer";
-import { PageContext, UserContext } from "@/pages/_app";
+import { PageContext, User, UserContext } from "@/pages/_app";
 
 import Window from "./Window";
 
@@ -41,6 +41,7 @@ const MyPuddle = () => {
   const [mpPage, setMpPage] = useState<MyPuddlePage>("me");
   const page = useContext(PageContext);
   const user = useContext(UserContext);
+  const [friends, setFriends] = useState<User[]>([]);
 
   const tokenId = user?.user?.tokenId ?? "";
   const tokenAddress = user?.user?.tokenAddress ?? "";
@@ -59,6 +60,14 @@ const MyPuddle = () => {
   });
 
   const projectType = getCharacterType(user?.user?.tokenAddress ?? "");
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/friends`);
+      const data = await res.json();
+      console.log(data);
+    })();
+  }, []);
 
   return (
     <Window
@@ -104,7 +113,7 @@ const MyPuddle = () => {
                   >
                     {projectType}
                   </Link>
-                  Last Login: 1 day ago
+                  Last Login: Today
                 </div>
               </div>
 
@@ -115,7 +124,13 @@ const MyPuddle = () => {
                 <div className="m-1 bg-[#D5E8FB] p-2">{user?.user?.tone}</div>
               </div>
             </div>
-            <div className="col-span-2">byte</div>
+            <div className="col-span-2">
+              <div className="bg-[#FFCC99]">
+                <span className="p-2 font-bold">
+                  {user?.user?.username}&apos;s Puddle
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
