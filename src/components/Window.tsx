@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Button, Window as R95Window, WindowHeader } from "react95";
 import { IoCloseSharp } from "react-icons/io5";
 import styled from "styled-components";
@@ -42,7 +43,7 @@ const Window = ({
           {/*   <IoCloseSharp size={22} /> */}
           {/* </Button> */}
         </WindowHeader>
-        <span {...props}>{children}</span>
+        <Fragment {...props}>{children}</Fragment>
       </R95Window>
     </Wrapper>
   );

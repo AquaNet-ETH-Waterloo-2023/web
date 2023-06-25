@@ -1,8 +1,12 @@
 import Image from "next/image";
 
-const Folder = () => {
+interface Props {
+  size?: number;
+}
+
+const Folder = ({ size = 24 }: Props) => {
   return (
-    <Image src="/icon_folder.png" alt="folder" width={24} height={24} />
+    <Image src="/icon_folder.png" alt="folder" width={size} height={size} />
   );
 };
 

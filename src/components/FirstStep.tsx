@@ -33,24 +33,26 @@ const FirstStep = ({ address }: Props) => {
       width={450}
       height={300}
     >
-      <span className="flex flex-col items-center justify-center gap-4">
-        <Key size={80} />
-        <Button
-          style={{ width: 150, fontSize: 20 }}
-          onClick={() => setStep("login")}
-        >
-          Sign In
-        </Button>
-      </span>
-      <span className="flex flex-col items-center justify-center gap-4">
-        <Avatar size={80} />
-        <Button
-          style={{ width: 150, fontSize: 20 }}
-          onClick={() => setStep("new")}
-        >
-          New Account
-        </Button>
-      </span>
+      <div className="flex grow justify-around">
+        <span className="flex flex-col items-center justify-center gap-4">
+          <Key size={80} />
+          <Button
+            style={{ width: 150, fontSize: 20 }}
+            onClick={() => setStep("login")}
+          >
+            Sign In
+          </Button>
+        </span>
+        <span className="flex flex-col items-center justify-center gap-4">
+          <Avatar size={80} />
+          <Button
+            style={{ width: 150, fontSize: 20 }}
+            onClick={() => setStep("new")}
+          >
+            New Account
+          </Button>
+        </span>
+      </div>
     </Window>
   ) : step === "login" ? (
     <UserLogin address={address} back={() => setStep("first")} />

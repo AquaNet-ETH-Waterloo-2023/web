@@ -148,7 +148,12 @@ const UserLogin = ({ address, back }: Props) => {
   }, [nfts, tokenboundClient, publicClient]);
 
   return (
-    <Window height={500} width={800} icon={<WaterDrop />}>
+    <Window
+      height={500}
+      width={800}
+      icon={<WaterDrop />}
+      title="AquaNet - Login"
+    >
       <div className="relative m-[2px] flex grow bg-white">
         <Image
           src="/gradient_blue.png"
