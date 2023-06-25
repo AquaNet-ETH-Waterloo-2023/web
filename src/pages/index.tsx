@@ -1,4 +1,5 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "react95";
@@ -21,6 +22,9 @@ export default function Home() {
 
   return (
     <div className="flex h-full  w-full items-center justify-center">
+      <Head>
+        <title>AquaNet Portal</title>
+      </Head>
       {address ? (
         user && !user.user && <FirstStep address={address} />
       ) : (

@@ -59,7 +59,7 @@ const msFont = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [page, setPage] = useState<Page>("none");
+  const [page, setPage] = useState<Page>("mypuddle");
 
   return (
     <ThemeProvider theme={original}>
