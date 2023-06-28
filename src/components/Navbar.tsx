@@ -59,7 +59,8 @@ const Navbar = ({}: Props) => {
           <div className="flex items-center gap-4">
             {ensAvatar ? (
               <span onClick={openAccountModal} className="cursor-pointer">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={ensAvatar}
                   alt="Profile image"
                   width={30}
