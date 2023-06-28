@@ -81,7 +81,7 @@ export type NFT = {
     };
     contentValue: {
       image: {
-        small: string;
+        small: string | null;
       };
     };
   };
@@ -218,7 +218,7 @@ const UserLogin = ({ address, back }: Props) => {
             {nftsWithoutAccounts.map((nft: NFT, index) => {
               return (
                 <Image
-                  src={nft.tokenNfts.contentValue.image.small}
+                  src={nft.tokenNfts.contentValue.image.small ?? "/icon_computer.png"}
                   alt={`#${nft.tokenNfts.metaData.name}`}
                   key={nft.tokenNfts.metaData.name}
                   width={140}

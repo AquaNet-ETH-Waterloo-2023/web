@@ -10,6 +10,7 @@ import WaterDrop from "@/icons/WaterDrop";
 import { User, UserContext } from "@/pages/_app";
 import { useAirstackQuery } from "@/util/airstack";
 
+import { NFT } from "./UserCreate";
 import Window from "./Window";
 
 function isDeepEqual(obj1: any, obj2: any): boolean {
@@ -70,21 +71,6 @@ interface Props {
   address: string;
   back: () => void;
 }
-
-type NFT = {
-  tokenNfts: {
-    address: string;
-    tokenId: string;
-    metaData: {
-      name: string;
-    };
-    contentValue: {
-      image: {
-        small: string;
-      };
-    };
-  };
-};
 
 const UserLogin = ({ address, back }: Props) => {
   const [selectedId, setSelectedId] = useState("");
@@ -191,7 +177,9 @@ const UserLogin = ({ address, back }: Props) => {
           {nftsWithAccounts.map((nft: NFT, index) => {
             return (
               <Image
-                src={nft.tokenNfts.contentValue.image.small}
+                src={
+                  nft.tokenNfts.contentValue.image.small ?? "/icon_computer.png"
+                }
                 alt={`#${nft.tokenNfts.metaData.name}`}
                 key={nft.tokenNfts.metaData.name}
                 width={140}
@@ -231,7 +219,7 @@ const UserLogin = ({ address, back }: Props) => {
                 .name,
               image:
                 nftsWithAccounts[parseInt(selectedId)].tokenNfts.contentValue
-                  .image.small,
+                  .image.small ?? "/icon_computer.png",
               bio: personality.bio,
               created_at: personality.created_at,
               username: personality.username,
