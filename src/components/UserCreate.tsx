@@ -36,8 +36,8 @@ function isDeepEqual(obj1: any, obj2: any): boolean {
 
   // Check if both objects are objects
   if (typeof obj1 === "object" && typeof obj2 === "object") {
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
+    const keys1 = Object.keys(obj1 || {});
+    const keys2 = Object.keys(obj2 || {});
 
     if (keys1.length !== keys2.length) {
       return false;
@@ -146,9 +146,11 @@ const UserLogin = ({ address, back }: Props) => {
     });
 
     return () => {
-      setNftsWithoutAccounts([]);
+      if (nftsWithoutAccounts.length > 0) {
+        setNftsWithoutAccounts([]);
+      }
     };
-  }, [nfts, tokenboundClient, publicClient]);
+  }, [nfts, tokenboundClient, publicClient, nftsWithoutAccounts.length]);
 
   const handleClick = useCallback(async () => {
     if (!walletClient) return;
@@ -173,57 +175,60 @@ const UserLogin = ({ address, back }: Props) => {
     }
   }, [address, walletClient, nftsWithoutAccounts, selectedId, publicClient]);
 
-  if (!creating) {
-    return (
-      <Window
-        height={500}
-        width={800}
-        icon={<WaterDrop />}
-        title="AquaNet - New Account"
-      >
-        <div className="relative m-[2px] flex grow bg-white">
-          <Image
-            src="/gradient_blue.png"
-            alt=""
-            width={120}
-            height={120}
-            className="absolute left-0 top-0 z-0"
-          />
-          <div className="relative z-10 flex">
-            <div className="m-6">
-              <span className="mt-4 flex gap-4 p-4">
-                <Image
-                  src="/blue_avatar.png"
-                  alt="blue avatar"
-                  width={64}
-                  height={64}
-                />
-                <h2 className="w-[150px] text-center text-2xl font-bold">
-                  Choose NFT
-                </h2>
-              </span>
-              <Image
-                src="/blue_separator.png"
-                alt="blue separator"
-                width={250}
-                height={3}
-              />
-              <p className="w-[250px] p-6 text-center">
-                Choose the NFT that you would like to make an account for.
-              </p>
-            </div>
-          </div>
+  if (creating) {
+    return <LoadingProfile nft={nftsWithoutAccounts[parseInt(selectedId)]} />;
+  }
 
-          <div className="grid h-[380px] grid-cols-3 gap-4 overflow-hidden p-4">
-            {nftsWithoutAccounts.map((nft: NFT, index) => {
-              return (
+  return (
+    <Window
+      height={500}
+      width={800}
+      icon={<WaterDrop />}
+      title="AquaNet - New Account"
+    >
+      <div className="relative m-[2px] flex grow bg-white">
+        <Image
+          src="/gradient_blue.png"
+          alt=""
+          width={120}
+          height={120}
+          className="absolute left-0 top-0 z-0"
+        />
+        <div className="relative z-10 flex">
+          <div className="m-6">
+            <span className="mt-4 flex gap-4 p-4">
+              <Image
+                src="/blue_avatar.png"
+                alt="blue avatar"
+                width={64}
+                height={64}
+              />
+              <h2 className="w-[150px] text-center text-2xl font-bold">
+                Choose NFT
+              </h2>
+            </span>
+            <Image
+              src="/blue_separator.png"
+              alt="blue separator"
+              width={250}
+              height={3}
+            />
+            <p className="w-[250px] p-6 text-center">
+              Choose the NFT that you would like to make an account for.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid h-[380px] w-full grid-cols-3 gap-4 overflow-scroll p-4">
+          {nftsWithoutAccounts.map((nft: NFT, index) => {
+            return (
+              <div key={nft.tokenNfts.metaData.name} className="relative">
                 <Image
                   src={
                     nft.tokenNfts.contentValue.image?.small ??
                     "/icon_avatar.png"
                   }
                   alt={`#${nft.tokenNfts.metaData.name}`}
-                  key={nft.tokenNfts.metaData.name}
                   width={140}
                   height={140}
                   className={twMerge(
@@ -233,28 +238,32 @@ const UserLogin = ({ address, back }: Props) => {
                   )}
                   onClick={() => setSelectedId(index.toString())}
                 />
-              );
-            })}
-          </div>
-        </div>
 
-        <div className="m-4 flex justify-center gap-4">
-          <Button style={{ width: 200 }} onClick={back}>
-            Back
-          </Button>
-          <Button
-            style={{ width: 200 }}
-            disabled={!selectedId}
-            onClick={handleClick}
-          >
-            Create Account
-          </Button>
+                {nft.tokenNfts.contentValue.image === null && (
+                  <span className="absolute bottom-0 right-0 bg-red-500 px-[6px] text-white">
+                    {nft.tokenNfts.metaData.name}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </Window>
-    );
-  } else {
-    return <LoadingProfile nft={nftsWithoutAccounts[parseInt(selectedId)]} />;
-  }
+      </div>
+
+      <div className="m-4 flex justify-center gap-4">
+        <Button style={{ width: 200 }} onClick={back}>
+          Back
+        </Button>
+        <Button
+          style={{ width: 200 }}
+          disabled={!selectedId}
+          onClick={handleClick}
+        >
+          Create Account
+        </Button>
+      </div>
+    </Window>
+  );
 };
 
 export default UserLogin;

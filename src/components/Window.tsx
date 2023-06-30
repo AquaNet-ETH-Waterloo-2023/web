@@ -47,7 +47,7 @@ const Window = ({
             </Button>
           )}
         </WindowHeader>
-        <Fragment {...props}>{children}</Fragment>
+        <Fragment>{children}</Fragment>
       </R95Window>
     </Wrapper>
   );
