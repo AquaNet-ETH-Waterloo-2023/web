@@ -24,7 +24,7 @@ const LoadingProfile = ({ nft }: Props) => {
   const tokenAddress = nft.tokenNfts.address;
   const tokenId = nft.tokenNfts.tokenId;
   const name = nft.tokenNfts.metaData.name;
-  const image = nft.tokenNfts.contentValue.image.small ?? "/icon_computer.png";
+  const image = nft.tokenNfts.contentValue.image?.small ?? "/icon_avatar.png";
 
   useEffect(() => {
     const timer = setInterval(() => {

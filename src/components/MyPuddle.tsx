@@ -95,6 +95,8 @@ const MyPuddle = () => {
   }, [user]);
 
   useEffect(() => {
+    if (!user?.user || !user?.user?.id) return;
+
     (async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/posts/all?author_id=${user?.user?.id}`

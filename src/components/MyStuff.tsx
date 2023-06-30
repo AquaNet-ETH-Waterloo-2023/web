@@ -56,10 +56,10 @@ const MyStuff = ({ tbaAddress }: Props) => {
                   className="flex flex-col items-center gap-1"
                 >
                   <Image
-                    src={nft.tokenNfts.contentValue.image?.small ?? "/icon_computer.png"}
+                    src={nft.tokenNfts.contentValue.image?.small ?? "/icon_avatar.png"}
                     alt={`#${nft.tokenNfts.metaData.name}`}
                     onError={(e) => {
-                      e.currentTarget.src = "/icon_computer.png";
+                      e.currentTarget.src = "/icon_avatar.png";
                     }}
                     width={100}
                     height={100}

@@ -178,7 +178,7 @@ const UserLogin = ({ address, back }: Props) => {
             return (
               <Image
                 src={
-                  nft.tokenNfts.contentValue.image.small ?? "/icon_computer.png"
+                  nft.tokenNfts.contentValue.image?.small ?? "/icon_avatar.png"
                 }
                 alt={`#${nft.tokenNfts.metaData.name}`}
                 key={nft.tokenNfts.metaData.name}
@@ -219,7 +219,7 @@ const UserLogin = ({ address, back }: Props) => {
                 .name,
               image:
                 nftsWithAccounts[parseInt(selectedId)].tokenNfts.contentValue
-                  .image.small ?? "/icon_computer.png",
+                  .image?.small ?? "/icon_avatar.png",
               bio: personality.bio,
               created_at: personality.created_at,
               username: personality.username,
